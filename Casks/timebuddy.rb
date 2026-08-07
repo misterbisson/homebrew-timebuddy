@@ -19,9 +19,7 @@ cask "timebuddy" do
 
   app "Timebuddy Incident Investigator.app"
 
-  zap trash: [
-    "~/Library/Application Support/Timebuddy Incident Investigator",
-  ]
+  zap trash: "~/Library/Application Support/Timebuddy Incident Investigator"
 
   caveats <<~EOS
     The first time Claude launches Timebuddy as an MCP server, macOS shows a
