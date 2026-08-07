@@ -11,14 +11,20 @@ on:
 
 jobs:
   cask-lint:
-    # Homebrew ships preinstalled on GitHub's macOS runners.
     runs-on: macos-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v7
+      # `brew style`/`brew audit --cask` both refuse to run against a cask
+      # file that isn't inside a directory Homebrew recognizes as a tap
+      # ("Homebrew requires casks to be in a tap, rejecting"). This action
+      # checks the repository out at the exact path Homebrew expects this
+      # tap to live at (it auto-detects the tap name from the
+      # `homebrew-<name>` repo name) — no separate `actions/checkout` step,
+      # and no `brew tap` step either.
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@fd832223f9f99ebf0244dd20658680e5d4aca049 # 2026.08.03.2
 
       - name: brew style
-        run: brew style --cask Casks/timebuddy.rb
+        run: brew style --cask timebuddy
 
       - name: brew audit
-        run: brew audit --cask --online Casks/timebuddy.rb
+        run: brew audit --cask --online timebuddy
