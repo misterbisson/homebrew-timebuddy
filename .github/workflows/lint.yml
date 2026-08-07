@@ -1,0 +1,24 @@
+name: Lint
+
+# Runs on every PR to main so a malformed cask never merges. Deliberately does
+# NOT run on push (including the release automation's direct pushes to main)
+# — those pushes only ever touch the version/sha256 fields with values the
+# other repo's workflow just computed from files it built and signed itself,
+# so there's nothing here for this check to usefully re-verify.
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  cask-lint:
+    # Homebrew ships preinstalled on GitHub's macOS runners.
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: brew style
+        run: brew style --cask Casks/timebuddy.rb
+
+      - name: brew audit
+        run: brew audit --cask --online Casks/timebuddy.rb
