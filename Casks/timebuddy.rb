@@ -15,13 +15,15 @@ cask "timebuddy" do
     strategy :github_latest
   end
 
-  depends_on macos: :sequoia
+  # brew audit --online checks this against the .app's own Info.plist
+  # LSMinimumSystemVersion (set by electron-builder for Electron 43.2.0, not
+  # hand-picked) and fails on a mismatch — :monterey is what the artifact
+  # itself declares, not a claim that it's been tested there.
+  depends_on macos: :monterey
 
   app "Timebuddy Incident Investigator.app"
 
-  zap trash: [
-    "~/Library/Application Support/Timebuddy Incident Investigator",
-  ]
+  zap trash: "~/Library/Application Support/Timebuddy Incident Investigator"
 
   caveats <<~EOS
     The first time Claude launches Timebuddy as an MCP server, macOS shows a
